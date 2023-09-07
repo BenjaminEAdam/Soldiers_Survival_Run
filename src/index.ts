@@ -1,19 +1,12 @@
-import { Application, Sprite } from 'pixi.js'
+import { Assets} from 'pixi.js'
+import { assets } from './assets';
+import { MenuScene } from './scenes/MenuScene';
+import { SceneManager } from './utils/SceneManager';
 
-const app = new Application({
-	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
-	resolution: window.devicePixelRatio || 1,
-	autoDensity: true,
-	backgroundColor: 0x6495ed,
-	width: 640,
-	height: 480
+Assets.addBundle("myAssets", assets);
+
+Assets.loadBundle(["myAssets"]).then(() => {
+	const myScene = new MenuScene;
+	SceneManager.initialize();
+	SceneManager.changeScene(myScene)
 });
-
-const clampy: Sprite = Sprite.from("clampy.png");
-
-clampy.anchor.set(0.5);
-
-clampy.x = app.screen.width / 2;
-clampy.y = app.screen.height / 2;
-
-app.stage.addChild(clampy);
