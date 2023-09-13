@@ -1,10 +1,10 @@
-import { Application, Ticker } from "pixi.js";
+import { Application, Sprite, Texture, Ticker} from "pixi.js";
 import { Keyboard } from "./Keyboard";
 import { SceneBase } from "./SceneBase";
 
 export namespace SceneManager{
 
-    export const WHIDTH = 1920;
+    export const WIDTH = 1920;
     export const HEIGHT = 1080;
     let currentScene:SceneBase;
 
@@ -19,10 +19,14 @@ export namespace SceneManager{
             view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
             resolution: window.devicePixelRatio || 1,
             autoDensity: true,
-            backgroundColor: 0x6495ed,
-            width: WHIDTH,
+            backgroundColor: 0x0,
+            width: WIDTH,
             height: HEIGHT,
         });
+
+        // Crea un fondo degradado utilizando una textura personalizada
+        const background = createGradientBackground(WIDTH, HEIGHT);
+        app.stage.addChild(background);
 
         //Todo lo que va en la lógica de index viene acá
 
@@ -70,4 +74,42 @@ export namespace SceneManager{
         //Group.shared.update(); --> Por ahora no lo uso
         currentScene?.update(framePassed, Ticker.shared.elapsedMS);
     }
+
+    function createGradientBackground(width: number, height: number): Sprite {
+        const quality = 256;
+        const canvas = document.createElement('canvas');
+        canvas.width = 1;
+        canvas.height = quality;
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx) {
+            console.log("Error canvas 2d");
+            throw new Error("No se pudo obtener el contexto 2D del lienzo.");
+        }
+    
+        // Crea un gradiente lineal en el contexto 2D
+        const gradient = ctx.createLinearGradient(0, 0, 0, quality);
+        gradient.addColorStop(0, '#ecaf79');
+        gradient.addColorStop(0.3, '#c0917f');
+        gradient.addColorStop(0.7, '#987989');
+        gradient.addColorStop(1, '#50464f');
+    
+        // Rellena el lienzo con el gradiente
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 1, quality);
+    
+        // Crea una textura desde el lienzo
+        const texture = Texture.from(canvas);
+    
+        // Crea un sprite con la textura degradada
+        const sprite = new Sprite(texture);
+    
+        // Ajusta el tamaño del sprite para cubrir el fondo completo
+        sprite.width = width;
+        sprite.height = height;
+    
+        // Devuelve la textura del sprite
+        return sprite;
+      }
+
 }

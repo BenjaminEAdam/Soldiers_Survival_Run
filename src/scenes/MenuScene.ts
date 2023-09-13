@@ -11,7 +11,7 @@ export class MenuScene extends SceneBase{
 
         clampy.anchor.set(0.5);
 
-        clampy.x = SceneManager.WHIDTH / 2;
+        clampy.x = SceneManager.WIDTH / 2;
         clampy.y = SceneManager.HEIGHT / 2;
 
         this.addChild(clampy);
