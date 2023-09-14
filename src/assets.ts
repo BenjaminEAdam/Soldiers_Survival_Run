@@ -3,10 +3,15 @@ import { ResolverManifest } from "pixi.js";
 export const manifest: ResolverManifest = {
     bundles: [
         {
-            name: "firstScene",
+            name: "mainScene",
             assets:{
                 clampy: "./clampy.png",
-                
+            }
+        },
+        {
+            name: "firstScene",
+            assets:{
+
             }
         }
     ]

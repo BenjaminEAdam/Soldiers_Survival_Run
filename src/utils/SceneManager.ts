@@ -7,7 +7,6 @@ export namespace SceneManager{
     export const WIDTH = 1920;
     export const HEIGHT = 1080;
     let currentScene:SceneBase;
-
     let app : Application;
     
     export function initialize(){
