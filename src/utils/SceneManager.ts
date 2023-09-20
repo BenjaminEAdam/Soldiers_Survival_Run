@@ -32,7 +32,6 @@ export namespace SceneManager{
         Keyboard.initialize();
 
         window.addEventListener("resize", ()=>{
-        console.log("resize done");
         
         const scaleWidth = window.innerWidth / app.screen.width;
         const scaleHeight = window.innerHeight/app.screen.height;
