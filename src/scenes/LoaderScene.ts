@@ -12,7 +12,7 @@ export class LoaderScene extends SceneBase {
   constructor() {
     super();
 
-    // Crea el container para añadir los componentes del título
+    // Crea el contenedor para añadir los componentes del título
     const titleGame = new Container();
     titleGame.position.set(-100,0);
     this.addChild(titleGame);
