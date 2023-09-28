@@ -6,10 +6,9 @@ import { IHitbox } from "./IHitbox";
 export class Player extends PhysicsContainer implements IHitbox{
 
     public playerAnimated: AnimatedSprite;
-    private static readonly GRAVITY = 1800;
+    private static readonly GRAVITY = 2000;
     private static readonly HEADWIND = 0;
-    private static readonly SPEED_X = 0;
-    private static readonly SPEED_Y = 900;
+    private static readonly SPEED_Y = 1000;
     public inPlataform = true;
     public jumped = false;
     private hitbox: Graphics;
@@ -27,7 +26,7 @@ export class Player extends PhysicsContainer implements IHitbox{
                 Texture.from("soldadoCorriendo6"),
             ], false
         );
-        this.playerAnimated.animationSpeed = 0.12;
+        this.playerAnimated.animationSpeed = 0.16;
         this.playerAnimated.scale.set(0.5, 0.5);
         this.playerAnimated.play();
         this.addChild(this.playerAnimated);
@@ -49,26 +48,19 @@ export class Player extends PhysicsContainer implements IHitbox{
         
         this.playerAnimated.update(deltaMS / (1000/60));
 
-        //Movimiento horizantal
-        if(Keyboard.state.get("ArrowRight") && this.inPlataform){
-            this.speed.x = Player.SPEED_X;
-            this.scale.set(1, 1);
-            this.playerAnimated.play();
-        }else if(Keyboard.state.get("ArrowLeft") && this.inPlataform){
-            this.speed.x = -Player.SPEED_X;
-            this.scale.set(-1, 1);
-            this.playerAnimated.play();
-        }else{
-            if(this.inPlataform){
-                this.speed.x = 0;
-            }
-            //this.playerAnimated.stop();
-        }
         //Movimiento vertical
         if(Keyboard.state.get("ArrowUp") && this.inPlataform){
             this.inPlataform = false;
-            this.speed.y = -Player.SPEED_Y;
-            
+            if(Keyboard.state.get("ArrowRight")){
+                this.speed.y = -Player.SPEED_Y*1.25;
+            }
+            else{
+                this.speed.y = -Player.SPEED_Y;
+            }    
+        }
+
+        if(Keyboard.state.get("ArrowDown") && !this.inPlataform){
+            this.acceleration.y = Player.GRAVITY*2;
         }
 
         if(!this.inPlataform){
@@ -78,6 +70,7 @@ export class Player extends PhysicsContainer implements IHitbox{
         if(this.inPlataform && this.jumped){
             this.playerAnimated.gotoAndPlay(0);
             this.jumped = false;
+            this.acceleration.y = Player.GRAVITY;
         }
 
     }

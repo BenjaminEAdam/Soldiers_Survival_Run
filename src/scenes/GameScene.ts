@@ -6,6 +6,9 @@ import { Plataform } from "../game/Plataform";
 import { checkCollision } from "../game/IHitbox";
 import { SceneBase } from "../utils/SceneBase";
 import { SceneManager } from "../utils/SceneManager";
+import { BoxArmed } from "../game/BoxArmed";
+import { Coffer } from "../game/Coffer";
+import { BoxAmmunition } from "../game/BoxAmmunition";
 
 export class GameScene extends SceneBase implements IActualizable{
 
@@ -13,7 +16,7 @@ export class GameScene extends SceneBase implements IActualizable{
     private dynamicObjects: DynamicObject[];
     private world: Container;
     private background: TilingSprite;
-    private gameSpeed: number = 200;
+    private gameSpeed: number = 300;
     private timePased: number = 0;
 
     constructor(){
@@ -49,14 +52,21 @@ export class GameScene extends SceneBase implements IActualizable{
 
         /*const caja_armada1 = new BoxArmed(1);
         caja_armada1.position.set(600,555);
+        caja_armada1.scale.set(3,3);
         this.addChild(caja_armada1);
+
+        const caja_municion1 = new BoxAmmunition(2);
+        caja_municion1.scale.set(3,3);
+        caja_municion1.position.set(600, 410);
+        this.addChild(caja_municion1);
 
         const caja_armada2 = new BoxArmed(2);
         caja_armada2.position.set(800,555);
         this.addChild(caja_armada2);
 
         const caja_municion1 = new BoxAmmunition(1);
-        caja_municion1.position.set(587, 300);
+        caja_municion1.scale.set(3,3);
+        caja_municion1.position.set(600, 300);
         this.addChild(caja_municion1);
 
         const caja_municion2 = new BoxAmmunition(2);
@@ -64,14 +74,15 @@ export class GameScene extends SceneBase implements IActualizable{
         this.addChild(caja_municion2);
 
         const cofre1 = new Coffer();
-        cofre1.position.set(600, 493);
+        cofre1.scale.set(1,1);
+        cofre1.position.set(600, 300);
         this.addChild(cofre1);
 
         const cofre2 = new Coffer();
         cofre2.position.set(800, 300);
         this.addChild(cofre2);
 
-        const bala = new Bullet();
+        /*const bala = new Bullet();
         bala.position.set(467, 551);
         this.addChild(bala);*/
 
@@ -82,17 +93,127 @@ export class GameScene extends SceneBase implements IActualizable{
         this.playerSoldier.update(deltaTime/2);
         
         this.timePased += deltaTime;
-        if(this.timePased>(10000*(50/this.gameSpeed))){
+        if(this.timePased>(30000*(50/this.gameSpeed))){
             this.timePased = 0;
             
             //Ir agregando obstáculos
+            
+            const random = Math.floor(Math.random()*8) + 1;
+            console.log(random);
+
+            const posYBoxArmed = SceneManager.HEIGHT*0.845;
+            const posYCoffer = SceneManager.HEIGHT*0.8625;
+            const posYBoxAmmunition = SceneManager.HEIGHT*0.875;
+
+            switch(random){
+                case 1:
+                    // 1 Caja de madera con pinches arriba
+                    const caja_armada1 = new BoxArmed(2);
+                    caja_armada1.position.set(SceneManager.WIDTH,posYBoxArmed);
+                    this.world.addChild(caja_armada1);
+                    this.dynamicObjects.push(caja_armada1);
+                    break;
+                case 2:
+                    // 1 Caja de madera sin pinches arriba y 1 caja de municion con pinches arriba
+                    const caja_armada2 = new BoxArmed(1);
+                    caja_armada2.position.set(SceneManager.WIDTH,posYBoxArmed);
+                    this.world.addChild(caja_armada2);
+                    this.dynamicObjects.push(caja_armada2);
+                    const caja_municion2 = new BoxAmmunition(2);
+                    caja_municion2.position.set(SceneManager.WIDTH,posYBoxAmmunition-caja_armada2.height);
+                    this.world.addChild(caja_municion2);
+                    this.dynamicObjects.push(caja_municion2);
+                    break;
+                case 3:
+                    // 1 Caja de madera sin pinches arriba y 1 cofre con pinches arriba
+                    const caja_armada3 = new BoxArmed(1);
+                    caja_armada3.position.set(SceneManager.WIDTH,posYBoxArmed);
+                    this.world.addChild(caja_armada3);
+                    this.dynamicObjects.push(caja_armada3);
+                    const cofre3 = new Coffer();
+                    cofre3.position.set(SceneManager.WIDTH,posYCoffer-caja_armada3.height);
+                    this.world.addChild(cofre3);
+                    this.dynamicObjects.push(cofre3);
+                    break;
+                case 4:
+                    // 1 Caja de madera sin pinches arriba y 1 caja de madera con pinches arriba
+                    const caja_armada4 = new BoxArmed(1);
+                    caja_armada4.position.set(SceneManager.WIDTH,posYBoxArmed);
+                    this.world.addChild(caja_armada4);
+                    this.dynamicObjects.push(caja_armada4);
+                    const caja_armada5 = new BoxArmed(2);
+                    caja_armada5.position.set(SceneManager.WIDTH,posYBoxArmed-caja_armada4.height);
+                    this.world.addChild(caja_armada5);
+                    this.dynamicObjects.push(caja_armada5);
+                    break;
+                case 5:
+                    // 1 Caja de madera sin pinches arriba, 1 caja de madera sin pinches arriba y 1 cofre con pinches arriba
+                    const caja_armada6 = new BoxArmed(1);
+                    caja_armada6.position.set(SceneManager.WIDTH,posYBoxArmed);
+                    this.world.addChild(caja_armada6);
+                    this.dynamicObjects.push(caja_armada6);
+                    const caja_armada7 = new BoxArmed(1);
+                    caja_armada7.position.set(SceneManager.WIDTH,posYBoxArmed-caja_armada6.height);
+                    this.world.addChild(caja_armada7);
+                    this.dynamicObjects.push(caja_armada7);
+                    const cofre5 = new Coffer();
+                    cofre5.position.set(SceneManager.WIDTH,posYCoffer-caja_armada7.height-caja_armada6.height);
+                    this.world.addChild(cofre5);
+                    this.dynamicObjects.push(cofre5);
+                    break;
+                case 6:
+                    // 1 Caja de madera sin pinches arriba, 1 caja de madera sin pinches arriba y 1 caja de municion con pinches arriba
+                    const caja_armada8 = new BoxArmed(1);
+                    caja_armada8.position.set(SceneManager.WIDTH,posYBoxArmed);
+                    this.world.addChild(caja_armada8);
+                    this.dynamicObjects.push(caja_armada8);
+                    const caja_armada9 = new BoxArmed(1);
+                    caja_armada9.position.set(SceneManager.WIDTH,posYBoxArmed-caja_armada8.height);
+                    this.world.addChild(caja_armada9);
+                    this.dynamicObjects.push(caja_armada9);
+                    const caja_municion6 = new BoxAmmunition(2);
+                    caja_municion6.position.set(SceneManager.WIDTH,posYBoxAmmunition-caja_armada9.height-caja_armada8.height);
+                    this.world.addChild(caja_municion6);
+                    this.dynamicObjects.push(caja_municion6);
+                    break;
+                case 7:
+                    // 1 Caja de madera sin pinches arriba, 1 caja de madera sin pinches arriba y 1 caja de municion con pinches arriba
+                    const caja_armada10 = new BoxArmed(1);
+                    caja_armada10.position.set(SceneManager.WIDTH,posYBoxArmed);
+                    this.world.addChild(caja_armada10);
+                    this.dynamicObjects.push(caja_armada10);
+                    const caja_armada11 = new BoxArmed(1);
+                    caja_armada11.position.set(SceneManager.WIDTH,posYBoxArmed-caja_armada10.height);
+                    this.world.addChild(caja_armada11);
+                    this.dynamicObjects.push(caja_armada11);
+                    const caja_armada12 = new BoxArmed(2);
+                    caja_armada12.position.set(SceneManager.WIDTH,posYBoxArmed-caja_armada11.height-caja_armada10.height);
+                    this.world.addChild(caja_armada12);
+                    this.dynamicObjects.push(caja_armada12);
+                    break;
+                case 8:
+                    // 1 Caja de madera sin pinches arriba, 1 caja de municion sin pinches arriba y 1 cofre con pinches arriba
+                    const caja_armada13 = new BoxArmed(1);
+                    caja_armada13.position.set(SceneManager.WIDTH,posYBoxArmed);
+                    this.world.addChild(caja_armada13);
+                    this.dynamicObjects.push(caja_armada13);
+                    const caja_municion8 = new BoxAmmunition(1);
+                    caja_municion8.position.set(SceneManager.WIDTH,posYBoxAmmunition-caja_armada13.height);
+                    this.world.addChild(caja_municion8);
+                    this.dynamicObjects.push(caja_municion8);
+                    const cofre8 = new Coffer();
+                    cofre8.position.set(SceneManager.WIDTH,(posYCoffer-caja_municion8.height-caja_armada13.height)*1.007);
+                    this.world.addChild(cofre8);
+                    this.dynamicObjects.push(cofre8);
+                    break;
+            }
 
             /*const caja_armada1 = new BoxArmed(1);
-            caja_armada1.position.set(1280,555);
+            caja_armada1.position.set(SceneManager.WIDTH,SceneManager.HEIGHT*0.92-caja_armada1.height);
             this.world.addChild(caja_armada1);
             this.dynamicObjects.push(caja_armada1);
 
-            const cofre1 = new Coffer();
+            /*const cofre1 = new Coffer();
             cofre1.position.set(1280, 493);
             this.world.addChild(cofre1);
             this.dynamicObjects.push(cofre1);*/
