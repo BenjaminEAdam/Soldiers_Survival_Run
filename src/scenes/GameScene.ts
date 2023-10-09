@@ -9,6 +9,8 @@ import { SceneManager } from "../utils/SceneManager";
 import { BoxArmed } from "../game/BoxArmed";
 import { Coffer } from "../game/Coffer";
 import { BoxAmmunition } from "../game/BoxAmmunition";
+import { Bullet } from "../game/Bullet";
+import { Keyboard } from "../utils/Keyboard";
 
 export class GameScene extends SceneBase implements IActualizable{
 
@@ -18,6 +20,8 @@ export class GameScene extends SceneBase implements IActualizable{
     private background: TilingSprite;
     private gameSpeed: number = 300;
     private timePased: number = 0;
+    private timePased2: number = 0;
+    private balas: Bullet[];
 
     constructor(){
         super();
@@ -27,6 +31,7 @@ export class GameScene extends SceneBase implements IActualizable{
         this.addChild(this.background);
 
         this.dynamicObjects = [];
+        this.balas = [];
 
         let piso = new Plataform("piso_piedra");
         piso.position.set(0, SceneManager.HEIGHT*0.92);
@@ -80,11 +85,9 @@ export class GameScene extends SceneBase implements IActualizable{
 
         const cofre2 = new Coffer();
         cofre2.position.set(800, 300);
-        this.addChild(cofre2);
+        this.addChild(cofre2);*/
 
-        /*const bala = new Bullet();
-        bala.position.set(467, 551);
-        this.addChild(bala);*/
+        
 
     }
 
@@ -99,7 +102,6 @@ export class GameScene extends SceneBase implements IActualizable{
             //Ir agregando obstáculos
             
             const random = Math.floor(Math.random()*8) + 1;
-            console.log(random);
 
             const posYBoxArmed = SceneManager.HEIGHT*0.845;
             const posYCoffer = SceneManager.HEIGHT*0.8625;
@@ -207,30 +209,58 @@ export class GameScene extends SceneBase implements IActualizable{
                     this.dynamicObjects.push(cofre8);
                     break;
             }
-
-            /*const caja_armada1 = new BoxArmed(1);
-            caja_armada1.position.set(SceneManager.WIDTH,SceneManager.HEIGHT*0.92-caja_armada1.height);
-            this.world.addChild(caja_armada1);
-            this.dynamicObjects.push(caja_armada1);
-
-            /*const cofre1 = new Coffer();
-            cofre1.position.set(1280, 493);
-            this.world.addChild(cofre1);
-            this.dynamicObjects.push(cofre1);*/
-
-
+            
         }
+
+        this.timePased2 += deltaTime;
+        if(Keyboard.state.get("KeyS")){
+            if(this.timePased2>300){
+                this.timePased2 = 0;
+                const bala = new Bullet();
+                //SceneManager.HEIGHT*0.84
+                bala.position.set(this.playerSoldier.position.x*1.065, this.playerSoldier.position.y*1.065);
+                this.world.addChild(bala);
+                this.balas.push(bala);
+            }
+        }
+
+        console.log(this.balas.length);
 
         let countExitPlat = 0;
         for (let plataform of this.dynamicObjects){
             plataform.speed.x = -this.gameSpeed;
             plataform.update(deltaTime/1000);
             const overlap = checkCollision(this.playerSoldier, plataform);
-            if( overlap != null){
+            if( overlap !== null){
                 this.playerSoldier.separate(overlap, plataform.position);
             }else{
                 countExitPlat++;
             }
+            for(let plataform1 of this.dynamicObjects){
+                const overlap1 = checkCollision(plataform, plataform1);
+                if(overlap1 !== null){
+                    plataform.separate(overlap1, plataform1.position);
+                }
+            }
+            for(let bala of this.balas){
+                bala.update(deltaTime/1000);
+                const collisionBullet = checkCollision(plataform, bala);
+                if(collisionBullet !== null){
+                    bala.destroy();
+                    plataform.destroy();
+                }
+            }
+            //Si la bala ya impactó entonces sacarla de la lista de balas
+            this.balas = this.balas.filter((elem) => !elem.destroyed);
+            for(let bala of this.balas){
+                // Si la bala sale de pantalla entonces destruirla
+                if(bala.position.x > SceneManager.WIDTH){
+                    console.log("Entro acá 2")
+                    bala.destroy();
+                }
+            }
+            this.balas = this.balas.filter((elem) => !elem.destroyed);
+
             // Si la plataforma sale de pantalla entonces destruirla
             if(plataform.getHitbox().right < 0){
                 plataform.destroy();

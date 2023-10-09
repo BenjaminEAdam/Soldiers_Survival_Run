@@ -4,13 +4,11 @@ import { DynamicObject } from "./DynamicObject";
 
 export class Coffer extends DynamicObject{
     
-    public override isFloor: Boolean;
     private hitbox: Graphics;
     
     constructor(){
-        super();
+        super(false);
 
-        this.isFloor = false;
         this.hitbox = new Graphics();
         this.hitbox.beginFill(0x0000FF, 0.1);
         this.hitbox.drawRect(-10, 0, 105, 60);

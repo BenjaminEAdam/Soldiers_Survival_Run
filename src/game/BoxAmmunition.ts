@@ -4,13 +4,11 @@ import { DynamicObject } from "./DynamicObject";
 
 export class BoxAmmunition extends DynamicObject{
     
-    public override isFloor: Boolean; 
     private hitbox: Graphics;
     
     constructor(number : number){
-        super();
+        super(false);
 
-        this.isFloor = false;
         this.hitbox = new Graphics();
         const box = Sprite.from("cajaMilitar");
         box.scale.set(0.07,0.10);
