@@ -30,12 +30,12 @@ export class BoxArmed extends DynamicObject{
 
         switch(number){
             case 1:
-                this.hitbox.beginFill(0x0000FF, 0.1);
+                this.hitbox.beginFill(0x0000FF, 0.001);
                 this.hitbox.drawRect(-10, 0, 105, 80);
                 this.hitbox.endFill();
                 break;
             case 2:
-                this.hitbox.beginFill(0x0000FF, 0.1);
+                this.hitbox.beginFill(0x0000FF, 0.001);
                 this.hitbox.drawRect(-10, -10, 105, 90);
                 this.hitbox.endFill();
                 this.addChild(pinches_superiores);

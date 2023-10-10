@@ -16,7 +16,7 @@ export class Plataform extends DynamicObject{
                 piso.scale.set(0.5,0.3);
                 this.addChild(piso);
 
-                this.hitbox.beginFill(0x0000FF, 0.2);
+                this.hitbox.beginFill(0x0000FF, 0.001);
                 this.hitbox.drawRect(0, 0, piso.width, piso.height);
                 this.hitbox.endFill();
                 this.addChild(this.hitbox);
@@ -24,7 +24,7 @@ export class Plataform extends DynamicObject{
                 
             default:
                 console.log("EL STRING INGRESADO EN EL CONSTRUCTOR DE PLATAFORMA NO ES VALIDO");
-                this.hitbox.beginFill(0x0000FF, 0.2);
+                this.hitbox.beginFill(0x0000FF, 0.001);
                 this.hitbox.drawRect(0, 0, 0, 0);
                 this.hitbox.endFill();
                 this.addChild(this.hitbox);

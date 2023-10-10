@@ -11,6 +11,8 @@ import { Coffer } from "../game/Coffer";
 import { BoxAmmunition } from "../game/BoxAmmunition";
 import { Bullet } from "../game/Bullet";
 import { Keyboard } from "../utils/Keyboard";
+import { DefeatPopUp } from "../ui/DefeatPopUp";
+import { Star } from "../game/Star";
 
 export class GameScene extends SceneBase implements IActualizable{
 
@@ -21,10 +23,28 @@ export class GameScene extends SceneBase implements IActualizable{
     private gameSpeed: number = 300;
     private timePased: number = 0;
     private timePased2: number = 0;
+    private timePased3: number = 0;
     private balas: Bullet[];
+    private estrellasList: Star[];
+    private isPaused: Boolean;
+    private isVictory: Boolean;
+    private isDefeat: Boolean;
+    private level: number;
+    private score: number;
+    private coins: number;
+    private estrellas: number;
+    private ui: DefeatPopUp | null = null;
 
-    constructor(){
+    constructor(level: number){
         super();
+
+        this.level=level;
+        this.score = 0;
+        this.coins = 0;
+        this.estrellas = 0;
+        this.isPaused = false;
+        this.isVictory = false;
+        this.isDefeat = false;
 
         this.world = new Container();
         this.background = new TilingSprite(Texture.from("fondoCiudad"), 2979, 1080);
@@ -32,6 +52,7 @@ export class GameScene extends SceneBase implements IActualizable{
 
         this.dynamicObjects = [];
         this.balas = [];
+        this.estrellasList = [];
 
         let piso = new Plataform("piso_piedra");
         piso.position.set(0, SceneManager.HEIGHT*0.92);
@@ -54,6 +75,11 @@ export class GameScene extends SceneBase implements IActualizable{
         this.world.addChild(this.playerSoldier);
 
         this.addChild(this.world);
+
+        this.ui = new DefeatPopUp(this.level);
+        this.ui.position.set(SceneManager.WIDTH / 2 - this.ui.width / 2, SceneManager.HEIGHT / 2 - this.ui.height / 2);
+        this.addChild(this.ui);
+        this.ui.visible = false;
 
         /*const caja_armada1 = new BoxArmed(1);
         caja_armada1.position.set(600,555);
@@ -92,6 +118,29 @@ export class GameScene extends SceneBase implements IActualizable{
     }
 
     public update(deltaTime: number, _deltaFrame: number): void {
+
+        if (this.ui) {
+            this.ui.updateScores(this.score, this.coins, this.estrellas);
+        }
+
+        if(Keyboard.state.get("Space") && !this.isVictory && !this.isDefeat){
+            this.isPaused=true;
+            if (this.ui) {
+                this.ui.setPaused();
+                this.ui.visible = true; // Haz visible la ventana ui
+            }
+        }
+
+        if(Keyboard.state.get("KeyP") && !this.isVictory && !this.isDefeat){
+            this.isPaused=false;
+            if (this.ui) {
+                this.ui.visible = false; // Oculta la ventana ui
+            }
+        }
+        
+        if(this.isPaused){
+            return;
+        }
         
         this.playerSoldier.update(deltaTime/2);
         
@@ -211,11 +260,49 @@ export class GameScene extends SceneBase implements IActualizable{
             }
             
         }
-
+        
         this.timePased2 += deltaTime;
+        if(this.timePased2>25000){
+            this.timePased2 = 0;
+            const estrella = new Star();
+            estrella.position.set(SceneManager.WIDTH,SceneManager.HEIGHT/2);
+            this.world.addChild(estrella);
+            this.estrellasList.push(estrella);
+        }
+        for (let estrella of this.estrellasList){
+            estrella.speed.x = -this.gameSpeed;
+            estrella.update(deltaTime/1000);
+            const overlap = checkCollision(this.playerSoldier, estrella);
+            if( overlap !== null){
+                estrella.destroy();
+                this.estrellas = this.estrellas + 1;
+                if(this.estrellas == 3){
+                    this.isPaused=true;
+                    this.isVictory=true;
+                    if(this.ui){
+                        this.ui.setVictory();
+                        this.ui.visible = true;
+                    }
+                }
+            }
+        }
+        this.estrellasList = this.estrellasList.filter((elem) => !elem.destroyed);
+        for(let estrella of this.estrellasList){
+            // Si la estrella sale de pantalla entonces destruirla
+            if(estrella.position.x < 0){
+                console.log("Entro acá estrella")
+                estrella.destroy();
+            }
+        }
+        this.estrellasList = this.estrellasList.filter((elem) => !elem.destroyed);
+
+        console.log('estrellas ganadas'.concat(this.estrellas.toString()));
+        console.log('estrellas pantalla'.concat(this.estrellasList.length.toString()));
+
+        this.timePased3 += deltaTime;
         if(Keyboard.state.get("KeyS")){
-            if(this.timePased2>300){
-                this.timePased2 = 0;
+            if(this.timePased3>300){
+                this.timePased3 = 0;
                 const bala = new Bullet();
                 //SceneManager.HEIGHT*0.84
                 bala.position.set(this.playerSoldier.position.x*1.065, this.playerSoldier.position.y*1.065);
@@ -224,18 +311,31 @@ export class GameScene extends SceneBase implements IActualizable{
             }
         }
 
-        console.log(this.balas.length);
-
         let countExitPlat = 0;
         for (let plataform of this.dynamicObjects){
             plataform.speed.x = -this.gameSpeed;
             plataform.update(deltaTime/1000);
             const overlap = checkCollision(this.playerSoldier, plataform);
-            if( overlap !== null){
-                this.playerSoldier.separate(overlap, plataform.position);
-            }else{
-                countExitPlat++;
+            if(plataform.isFloor){
+                if( overlap !== null){
+                    this.playerSoldier.separate(overlap, plataform.position);
+                }else{
+                    countExitPlat++;
+                }
             }
+            else{
+                if( overlap !== null){
+                    this.isPaused=true;
+                    this.isDefeat=true;
+                    if(this.ui){
+                        this.ui.setDefeat();
+                        this.ui.visible = true;
+                    }
+                }else{
+                    countExitPlat++;
+                }
+            }
+            
             for(let plataform1 of this.dynamicObjects){
                 const overlap1 = checkCollision(plataform, plataform1);
                 if(overlap1 !== null){

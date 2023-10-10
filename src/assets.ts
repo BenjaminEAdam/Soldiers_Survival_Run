@@ -1,11 +1,11 @@
 export const assets = {
     clampy: "./clampy.png",
-    botonContinuar: "./Botones/botonContinuar.png",
-    botonContinuarSeleccionado: "./Botones/botonContinuarSeleccionado.png",
-    botonContinuarPresionado: "./Botones/botonContinuarPresionado.png",
-    botonReintentar: "./Botones/botonReintentar.png",
-    botonReintentarSeleccionado: "./Botones/botonReintentarSeleccionado.png",
-    botonReintentarPresionado: "./Botones/botonReintentarPresionado.png",
+    botonNaranja: "./Botones/botonNaranja.png",
+    botonNaranjaSeleccionado: "./Botones/botonNaranjaSeleccionado.png",
+    botonNaranjaPresionado: "./Botones/botonNaranjaPresionado.png",
+    botonGris: "./Botones/botonGris.png",
+    botonGrisSeleccionado: "./Botones/botonGrisSeleccionado.png",
+    botonGrisPresionado: "./Botones/botonGrisPresionado.png",
     botonNavegacionSiguiente: "./Botones/botonNavegacionSiguiente.png",
     botonNavegacionSiguienteSeleccionado: "./Botones/botonNavegacionSiguienteSeleccionado.png",
     botonNavegacionSiguientePresionado: "./Botones/botonNavegacionSiguientePresionado.png",
@@ -32,5 +32,10 @@ export const assets = {
     cofre: "./Objetos/cofre.png",
     pinche: "./Objetos/pinche.png",
     lanza: "./Objetos/punta_lanza.png",
-    bala: "./Objetos/bala1.png"
+    bala: "./Objetos/bala1.png",
+
+    //Para UI
+    estrella: "./UI/estrella.png",
+    moneda: "./Iconos/moneda.png",
+    monedas: "./Iconos/monedas.png",
 }

@@ -30,12 +30,12 @@ export class BoxAmmunition extends DynamicObject{
         
         switch(number){
             case 1:
-                this.hitbox.beginFill(0x0000FF, 0.1);
+                this.hitbox.beginFill(0x0000FF, 0.001);
                 this.hitbox.drawRect(-10, 0, 105, 50);
                 this.hitbox.endFill();
                 break;
             case 2:
-                this.hitbox.beginFill(0x0000FF, 0.1);
+                this.hitbox.beginFill(0x0000FF, 0.001);
                 this.hitbox.drawRect(-10, -10, 105, 60);
                 this.hitbox.endFill();
                 this.addChild(pinches_superiores);

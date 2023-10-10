@@ -35,7 +35,7 @@ export class Player extends PhysicsContainer implements IHitbox{
         this.acceleration.y = Player.GRAVITY;
 
         this.hitbox = new Graphics();
-        this.hitbox.beginFill(0x0000FF, 0.2);
+        this.hitbox.beginFill(0x0000FF, 0.001);
         this.hitbox.drawRect(50, 30, 110, 250);
         this.hitbox.endFill();
         this.playerAnimated.addChild(this.hitbox);

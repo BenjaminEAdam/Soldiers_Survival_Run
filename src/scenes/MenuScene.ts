@@ -94,9 +94,9 @@ export class MenuScene extends SceneBase{
         const buttonClick = "buttonClick" as keyof DisplayObjectEvents
 
         this.botonContinuar = new Button(
-            Texture.from("botonReintentar"),
-            Texture.from("botonReintentarPresionado"),
-            Texture.from("botonReintentarSeleccionado")
+            Texture.from("botonGris"),
+            Texture.from("botonGrisPresionado"),
+            Texture.from("botonGrisSeleccionado")
         );
         this.botonContinuar.on(buttonClick, this.onButtonClickContinuar, this);
         this.botonContinuar.height=80;
@@ -143,7 +143,7 @@ export class MenuScene extends SceneBase{
 
     private onButtonClickContinuar():void{
         console.log("Button click continuar!");
-        const myScene = new GameScene()
+        const myScene = new GameScene(this.level)
         SceneManager.changeScene(myScene);
         Ticker.shared.add(function(deltaFrame){
             myScene.update(Ticker.shared.deltaMS, deltaFrame);
