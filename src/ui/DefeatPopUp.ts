@@ -155,7 +155,6 @@ export class DefeatPopUp extends Container{
             fontSize: 40,
             fill:'#9a7a89',
             fontFamily: "Bahnschrift",
-            fontStyle: 'italic',
             fontWeight: "bold",
             dropShadow: true,
             dropShadowAngle: Math.PI/6,

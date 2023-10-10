@@ -1,4 +1,4 @@
-import { Container, Texture, TilingSprite } from "pixi.js";
+import { Container, Texture, TilingSprite, Text, Sprite, Graphics } from "pixi.js";
 import { IActualizable } from "../utils/IActualizable";
 import { Player } from "../game/Player";
 import { DynamicObject } from "../game/DynamicObject";
@@ -24,6 +24,10 @@ export class GameScene extends SceneBase implements IActualizable{
     private timePased: number = 0;
     private timePased2: number = 0;
     private timePased3: number = 0;
+    private timePased4: number = 0;
+    private textScoreNumber: Text;
+    private textCoinsNumber: Text;
+    private textBulletNumber: Text;
     private balas: Bullet[];
     private estrellasList: Star[];
     private isPaused: Boolean;
@@ -33,6 +37,7 @@ export class GameScene extends SceneBase implements IActualizable{
     private score: number;
     private coins: number;
     private estrellas: number;
+    private balasCount: number;
     private ui: DefeatPopUp | null = null;
 
     constructor(level: number){
@@ -42,6 +47,7 @@ export class GameScene extends SceneBase implements IActualizable{
         this.score = 0;
         this.coins = 0;
         this.estrellas = 0;
+        this.balasCount = 100;
         this.isPaused = false;
         this.isVictory = false;
         this.isDefeat = false;
@@ -81,44 +87,88 @@ export class GameScene extends SceneBase implements IActualizable{
         this.addChild(this.ui);
         this.ui.visible = false;
 
-        /*const caja_armada1 = new BoxArmed(1);
-        caja_armada1.position.set(600,555);
-        caja_armada1.scale.set(3,3);
-        this.addChild(caja_armada1);
+        const roundedRect3 = new Graphics();
 
-        const caja_municion1 = new BoxAmmunition(2);
-        caja_municion1.scale.set(3,3);
-        caja_municion1.position.set(600, 410);
-        this.addChild(caja_municion1);
+        const rectWidth3 = 200; // Ancho del rectángulo
+        const rectHeight3 = 120; // Alto del rectángulo
+        const cornerRadius3 = 20; // Radio de las esquinas redondeadas
+        const fillColor3 = '#f0f0f0'; // Color de relleno
+        const fillAlpha3 = 0.21; // Transparencia del relleno (0 es completamente transparente)
+        const lineColor3 = '#f0f0f0'; // Color del borde
+        const lineWidth3 = 3; // Ancho del borde
 
-        const caja_armada2 = new BoxArmed(2);
-        caja_armada2.position.set(800,555);
-        this.addChild(caja_armada2);
+        roundedRect3.lineStyle(lineWidth3, lineColor3); // Establecer el estilo del borde
+        roundedRect3.beginFill(fillColor3, fillAlpha3); // Establecer el estilo de relleno (totalmente transparente)
+        roundedRect3.drawRoundedRect(0, 0, rectWidth3, rectHeight3, cornerRadius3); // Dibujar el rectángulo redondeado
+        roundedRect3.endFill(); // Finalizar el relleno
+        roundedRect3.position.set(1700, 20);
 
-        const caja_municion1 = new BoxAmmunition(1);
-        caja_municion1.scale.set(3,3);
-        caja_municion1.position.set(600, 300);
-        this.addChild(caja_municion1);
+        this.addChild(roundedRect3);
 
-        const caja_municion2 = new BoxAmmunition(2);
-        caja_municion2.position.set(787, 450);
-        this.addChild(caja_municion2);
+        const textScore = new Text('Score', {
+            fontSize: 40,
+            fill:'#3c303c',
+            fontFamily: "Bahnschrift",
+            fontWeight: "bold",
+        });
+        textScore.anchor.set(0.5,0.5);
+        textScore.position.set(80,50);
+        this.addChild(textScore);
 
-        const cofre1 = new Coffer();
-        cofre1.scale.set(1,1);
-        cofre1.position.set(600, 300);
-        this.addChild(cofre1);
+        this.textScoreNumber = new Text(this.score.toString().concat(' '), {
+            fontSize: 40,
+            fill:'#9a7a89',
+            fontFamily: "Bahnschrift",
+            fontWeight: "bold",
+            dropShadow: true,
+            dropShadowAngle: Math.PI/6,
+            dropShadowColor: 0xAAAAAA,
+            dropShadowDistance: 3
+        });
+        this.textScoreNumber.anchor.set(0.5,0.5);
+        this.textScoreNumber.position.set(200,52.5);
+        this.addChild(this.textScoreNumber);
 
-        const cofre2 = new Coffer();
-        cofre2.position.set(800, 300);
-        this.addChild(cofre2);*/
+        this.textCoinsNumber = new Text(this.coins.toString(), {
+            fontSize: 40,
+            fill:'#fda237',
+            fontFamily: "Bahnschrift",
+            fontWeight: "bold",
+        });
+        this.textCoinsNumber.anchor.set(0.5,0.5);
+        this.textCoinsNumber.position.set(1770, 55);
+        this.addChild(this.textCoinsNumber);
 
-        
+        const picCoins = Sprite.from("monedas");
+        picCoins.height = 70;
+        picCoins.width = 70;
+        picCoins.position.set(1825,20);
+        this.addChild(picCoins);
+
+        this.textBulletNumber = new Text(this.balasCount.toString(), {
+            fontSize: 40,
+            fill:'#866229',
+            fontFamily: "Bahnschrift",
+            fontWeight: "bold",
+        });
+        this.textBulletNumber.anchor.set(0.5,0.5);
+        this.textBulletNumber.position.set(1770, 110);
+        this.addChild(this.textBulletNumber);
+
+        const picBullet = Sprite.from("balas");
+        picBullet.height = 70;
+        picBullet.width = 70;
+        picBullet.position.set(1825,70);
+        this.addChild(picBullet);
 
     }
 
     public update(deltaTime: number, _deltaFrame: number): void {
-
+        
+        this.textBulletNumber.text = this.balasCount.toString();
+        this.textCoinsNumber.text = this.coins.toString();
+        this.textScoreNumber.text = this.score.toString();
+        
         if (this.ui) {
             this.ui.updateScores(this.score, this.coins, this.estrellas);
         }
@@ -140,6 +190,12 @@ export class GameScene extends SceneBase implements IActualizable{
         
         if(this.isPaused){
             return;
+        }
+
+        this.timePased4 += deltaTime;
+        if(this.timePased4>200){
+            this.timePased4 = 0;
+            this.score = this.score + 1;
         }
         
         this.playerSoldier.update(deltaTime/2);
@@ -275,6 +331,7 @@ export class GameScene extends SceneBase implements IActualizable{
             const overlap = checkCollision(this.playerSoldier, estrella);
             if( overlap !== null){
                 estrella.destroy();
+                this.score = this.score + 10;
                 this.estrellas = this.estrellas + 1;
                 if(this.estrellas == 3){
                     this.isPaused=true;
@@ -301,7 +358,8 @@ export class GameScene extends SceneBase implements IActualizable{
 
         this.timePased3 += deltaTime;
         if(Keyboard.state.get("KeyS")){
-            if(this.timePased3>300){
+            if(this.timePased3>300 && this.balasCount>0){
+                this.balasCount = this.balasCount - 1;
                 this.timePased3 = 0;
                 const bala = new Bullet();
                 //SceneManager.HEIGHT*0.84
@@ -346,6 +404,7 @@ export class GameScene extends SceneBase implements IActualizable{
                 bala.update(deltaTime/1000);
                 const collisionBullet = checkCollision(plataform, bala);
                 if(collisionBullet !== null){
+                    this.score = this.score + 1;
                     bala.destroy();
                     plataform.destroy();
                 }

@@ -38,4 +38,5 @@ export const assets = {
     estrella: "./UI/estrella.png",
     moneda: "./Iconos/moneda.png",
     monedas: "./Iconos/monedas.png",
+    balas: "./Iconos/balas.png",
 }
